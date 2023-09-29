@@ -416,6 +416,19 @@ class TicTacToeState extends State<TicTacToe> {
   void initState() {
     super.initState();
     createFullAd();
+    createBannerAd();
+  }
+
+  BannerAd? banner;
+  InterstitialAd? fullAd;
+
+  void createBannerAd() {
+    banner = BannerAd(
+      size: AdSize.fullBanner,
+      adUnitId: AdMobService.BannerAdUnitId!,
+      listener: AdMobService.bannerListener,
+      request: AdRequest(),
+    )..load();
   }
 
   void createFullAd() {
@@ -429,7 +442,6 @@ class TicTacToeState extends State<TicTacToe> {
     );
   }
 
-  InterstitialAd? fullAd;
   void showFullAd() {
     if (fullAd != null) {
       fullAd!.fullScreenContentCallback = FullScreenContentCallback(
@@ -444,6 +456,29 @@ class TicTacToeState extends State<TicTacToe> {
       );
       fullAd!.show();
     }
+  }
+
+  Widget getTimer() {
+    return widget.time
+        ? SizedBox(
+            width: 100,
+            height: 100,
+            child: Stack(fit: StackFit.expand, children: [
+              CircularProgressIndicator(
+                color: circularProgress,
+                value: maxTime / clockTime,
+                backgroundColor: circularProgressBG,
+                strokeWidth: 8,
+              ),
+              Center(
+                child: Text(
+                  "$maxTime",
+                  style: symbolStyle,
+                ),
+              ),
+            ]),
+          )
+        : Container();
   }
 
   @override
@@ -477,49 +512,62 @@ class TicTacToeState extends State<TicTacToe> {
               padding: EdgeInsets.all(20),
               child: Column(
                 children: [
-                  Spacer(),
+                  Spacer(
+                    flex: 1,
+                  ),
                   // This is for top (Show player details, game details)
-                  Align(
-                      alignment: Alignment.centerRight,
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: Colors.black,
-                          border: Border.all(color: Colors.grey, width: 3),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        height: 120,
-                        width: 100,
-                        child: Column(
-                          children: [
-                            Spacer(),
-                            Text(
-                              playerName,
-                              style: GoogleFonts.inriaSans(
-                                  textStyle: TextStyle(
-                                fontSize: 10,
-                                color: currentPlayer.color,
-                              )),
+                  Stack(
+                    children: [
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: getTimer(),
+                      ),
+                      Align(
+                          alignment: Alignment.centerRight,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: Colors.black,
+                              border: Border.all(color: Colors.grey, width: 3),
+                              borderRadius: BorderRadius.circular(10),
                             ),
-                            Spacer(),
-                            Icon(
-                              (widget.botOn &&
-                                      currentPlayer.symbol == player2.symbol)
-                                  ? Icons.computer
-                                  : Icons.perm_identity_outlined,
-                              color: currentPlayer.color,
-                              size: 35,
+                            height: 120,
+                            width: 100,
+                            child: Column(
+                              children: [
+                                Spacer(),
+                                Text(
+                                  playerName,
+                                  style: GoogleFonts.inriaSans(
+                                      textStyle: TextStyle(
+                                    fontSize: 10,
+                                    color: currentPlayer.color,
+                                  )),
+                                ),
+                                Spacer(),
+                                Icon(
+                                  (widget.botOn &&
+                                          currentPlayer.symbol ==
+                                              player2.symbol)
+                                      ? Icons.computer
+                                      : Icons.perm_identity_outlined,
+                                  color: currentPlayer.color,
+                                  size: 35,
+                                ),
+                                Center(
+                                  child: Text(
+                                    currentPlayer.symbol,
+                                    style: symbolStyle,
+                                  ),
+                                ),
+                                Spacer(),
+                              ],
                             ),
-                            Center(
-                              child: Text(
-                                currentPlayer.symbol,
-                                style: symbolStyle,
-                              ),
-                            ),
-                            Spacer(),
-                          ],
-                        ),
-                      )),
-                  Spacer(),
+                          )),
+                    ],
+                  ),
+                  Spacer(
+                    flex: 1,
+                  ),
                   // This is the main body part where tictactoe created
                   Container(
                     height: MediaQuery.of(context).size.width,
@@ -530,33 +578,21 @@ class TicTacToeState extends State<TicTacToe> {
                       children: mainBoxes,
                     ),
                   ),
-                  Spacer(),
+                  Spacer(
+                    flex: 3,
+                  ),
                   // This is for set timer
-                  widget.time
-                      ? SizedBox(
-                          width: 100,
-                          height: 100,
-                          child: Stack(fit: StackFit.expand, children: [
-                            CircularProgressIndicator(
-                              color: circularProgress,
-                              value: maxTime / clockTime,
-                              backgroundColor: circularProgressBG,
-                              strokeWidth: 8,
-                            ),
-                            Center(
-                              child: Text(
-                                "$maxTime",
-                                style: symbolStyle,
-                              ),
-                            ),
-                          ]),
-                        )
-                      : Container(),
-                  Spacer(),
                 ],
               ),
             ),
           ),
+          bottomNavigationBar: banner == null
+              ? Container()
+              : Container(
+                  margin: const EdgeInsets.only(bottom: 12),
+                  height: 52,
+                  child: AdWidget(ad: banner!),
+                ),
         ),
       ),
     );
