@@ -6,26 +6,7 @@ import 'package:new_version/new_version.dart';
 import 'package:tic_tac_toe_pro/constants/constants.dart';
 import 'package:tic_tac_toe_pro/functions/ads.dart';
 import 'package:tic_tac_toe_pro/functions/dataIO.dart';
-import 'package:tic_tac_toe_pro/screens/instructions.dart';
 import 'package:tic_tac_toe_pro/screens/ticTacToe.dart';
-import 'package:flutter/services.dart';
-
-copyInfo(String text, context, String copied) {
-  Navigator.pop(context);
-  Clipboard.setData(ClipboardData(text: text)).then((_) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        backgroundColor: Colors.white,
-        content: Text(
-          "$copied copied to clipboard",
-          style: TextStyle(
-            color: Colors.black,
-          ),
-        ),
-      ),
-    );
-  });
-}
 
 TextField userName(control, String hint) {
   return TextField(
@@ -52,7 +33,7 @@ getUserName(context) async {
         height: 150,
         child: Column(
           children: [
-            userName(_controller1, "Enter 1st player name (Default player)"),
+            userName(_controller1, "Enter your name"),
             userName(_controller2, "Enter 2nd player name"),
           ],
         ),
@@ -105,6 +86,7 @@ class _GameOptionsState extends State<GameOptions> {
         GestureDetector(
           onTap: () async {
             List<String> nameList = await getNames();
+            if (!mounted) return;
             Navigator.push(
               _context,
               MaterialPageRoute(
@@ -159,16 +141,16 @@ class _GameOptionsState extends State<GameOptions> {
     );
   }
 
+  void checkVersion() {
+    final newVersion = NewVersion(androidId: "com.insanj.tttp");
+    newVersion.showAlertIfNecessary(context: context);
+  }
+
   @override
   void initState() {
     super.initState();
     createBannerAd();
     checkVersion();
-  }
-
-  void checkVersion() {
-    final newVersion = NewVersion(androidId: "com.insanj.tttp");
-    newVersion.showAlertIfNecessary(context: context);
   }
 
   void createBannerAd() {
@@ -193,27 +175,17 @@ class _GameOptionsState extends State<GameOptions> {
               style: gameText,
             ),
             centerTitle: true,
-            leading: Builder(
-              builder: (context) => IconButton(
-                  onPressed: () {
-                    Scaffold.of(context).openDrawer();
-                  },
-                  icon: Icon(
-                    Icons.menu,
-                    color: iconColor,
-                  )),
+            leading: IconButton(
+              onPressed: () {
+                getUserName(context);
+              },
+              icon: Icon(
+                Icons.perm_identity_outlined,
+                color: iconColor,
+              ),
             ),
             backgroundColor: appBar,
             actions: [
-              IconButton(
-                onPressed: () {
-                  getUserName(context);
-                },
-                icon: Icon(
-                  Icons.perm_identity_outlined,
-                  color: iconColor,
-                ),
-              ),
               IconButton(
                 onPressed: () {
                   exit(0);
@@ -224,57 +196,6 @@ class _GameOptionsState extends State<GameOptions> {
                 ),
               ),
             ]),
-        drawer: Drawer(
-          backgroundColor: Colors.grey,
-          child: ListView(
-            children: [
-              ListTile(
-                leading: Icon(Icons.code),
-                title: Text(
-                  "Source code",
-                  style: drawerStyle,
-                ),
-                onTap: () {
-                  copyInfo(sourceCode, context, "Link");
-                },
-              ),
-              Divider(
-                thickness: 2,
-              ),
-              ListTile(
-                leading: Icon(Icons.person),
-                onTap: () {
-                  copyInfo(developer, context, "Email");
-                },
-                title: Text(
-                  "Developer",
-                  style: drawerStyle,
-                ),
-              ),
-              Divider(
-                thickness: 2,
-              ),
-              ListTile(
-                leading: Icon(Icons.integration_instructions_outlined),
-                title: Text(
-                  "Instructions",
-                  style: drawerStyle,
-                ),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => InstructionScreen(),
-                    ),
-                  );
-                },
-              ),
-              Divider(
-                thickness: 2,
-              ),
-            ],
-          ),
-        ),
         body: Container(
           decoration: BoxDecoration(
             gradient: mainBgGredient,

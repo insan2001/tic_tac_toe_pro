@@ -93,6 +93,7 @@ Note :  whenever player play with bot there is no need for
 }
 
 class TicTacToeState extends State<TicTacToe> {
+  BannerAd? banner;
   late String playerName = widget.nameList[0];
   //for temproray usage outside
   int temp = 0;
@@ -106,24 +107,13 @@ class TicTacToeState extends State<TicTacToe> {
   // it will selected through the previous input of user
   late int currentGameBox;
 
-  // global key set for access mini game
-  final globekey0 = GlobalKey<MiniTicTacToeState>();
-  final globekey1 = GlobalKey<MiniTicTacToeState>();
-  final globekey2 = GlobalKey<MiniTicTacToeState>();
-  final globekey3 = GlobalKey<MiniTicTacToeState>();
-  final globekey4 = GlobalKey<MiniTicTacToeState>();
-  final globekey5 = GlobalKey<MiniTicTacToeState>();
-  final globekey6 = GlobalKey<MiniTicTacToeState>();
-  final globekey7 = GlobalKey<MiniTicTacToeState>();
-  final globekey8 = GlobalKey<MiniTicTacToeState>();
-
   // this is for references of absorbers and opacity
   List<bool> absorbers = absorberS;
-  List<double> opacity = opacitY;
+  late List<double> opacity;
 
   // this is for update in UI
-  List<bool> _absorbers = List.generate(9, (index) => false);
-  List<double> _opacity = List.generate(9, (_) => 1);
+  late List<bool> _absorbers;
+  late List<double> _opacity;
 
   // used for create new absorbers
   late List<bool> newAbsorbers;
@@ -135,9 +125,18 @@ class TicTacToeState extends State<TicTacToe> {
   // this have the main game references
   List<String> mainFrame = List.generate(9, (_) => "");
 
+  final globekey0 = GlobalKey<MiniTicTacToeState>();
+  final globekey1 = GlobalKey<MiniTicTacToeState>();
+  final globekey2 = GlobalKey<MiniTicTacToeState>();
+  final globekey3 = GlobalKey<MiniTicTacToeState>();
+  final globekey4 = GlobalKey<MiniTicTacToeState>();
+  final globekey5 = GlobalKey<MiniTicTacToeState>();
+  final globekey6 = GlobalKey<MiniTicTacToeState>();
+  final globekey7 = GlobalKey<MiniTicTacToeState>();
+  final globekey8 = GlobalKey<MiniTicTacToeState>();
+
   // this function will decide weather draw mini game or containter according to the state of win
   Widget mainBox(int index) {
-    // Globalkey sets
     List<GlobalKey> globeKeys = [
       globekey0,
       globekey1,
@@ -149,6 +148,7 @@ class TicTacToeState extends State<TicTacToe> {
       globekey7,
       globekey8
     ];
+
     // chck for won or draw boxes
     if (!captured.contains(index)) {
       return AbsorbPointer(
@@ -177,14 +177,22 @@ class TicTacToeState extends State<TicTacToe> {
     } else {
       return Container(
           decoration: BoxDecoration(
-            color: Colors.black,
-            border: Border.all(color: Colors.grey, width: 3),
+            color: wonBoxBg,
+            border: Border.all(color: frameBorder, width: 3),
             borderRadius: BorderRadius.circular(10),
           ),
           child: Center(
             child: Text(
               mainFrame[index],
-              style: symbolStyle,
+              style: GoogleFonts.fuggles(
+                  textStyle: TextStyle(
+                fontSize: 48,
+                color: mainFrame[index] == player1.symbol
+                    ? player1.color
+                    : mainFrame[index] == player2.symbol
+                        ? player2.color
+                        : noOneColor,
+              )),
             ),
           ));
     }
@@ -192,21 +200,24 @@ class TicTacToeState extends State<TicTacToe> {
 
   void timeOut() {
     if (maxTime > 1) {
-      setState(() {
-        maxTime--;
-      });
+      if (mounted)
+        setState(() {
+          maxTime--;
+        });
     } else {
       // if bot is on bot will play
       widget.botOn ? bot() : changePlayer();
-      setState(() {
-        maxTime = clockTime;
-      });
+
+      if (mounted)
+        setState(() {
+          maxTime = clockTime;
+        });
     }
   }
 
   startTimer() {
     timer = Timer.periodic(Duration(seconds: 1), (timer) {
-      if (this.mounted) timeOut();
+      timeOut();
     });
   }
 
@@ -221,6 +232,7 @@ class TicTacToeState extends State<TicTacToe> {
       });
     } else {
       player = !player;
+
       setState(() {
         playerName = widget.nameList[0];
         currentPlayer = player1;
@@ -240,18 +252,20 @@ class TicTacToeState extends State<TicTacToe> {
       captured.add(index);
       mainFrame[index] = currentPlayer.symbol;
       opacity[index] = 1;
+
       if (captured.length > 2) {
         if (winChecker(mainFrame)) {
-          showFullAd();
           Navigator.push(
             context,
             MaterialPageRoute(
               builder: (context) => WinScreen(
                 playerIcon: currentPlayer.icon,
                 playerColor: currentPlayer.color,
+                winText: "$playerName has won the game!!",
               ),
             ),
           );
+          return;
         }
       }
     } else if (!displayXO.contains("")) {
@@ -262,7 +276,6 @@ class TicTacToeState extends State<TicTacToe> {
     }
     // check for draw
     if (captured.length == 9) {
-      showFullAd();
       // Nobody wins
       Navigator.push(
         context,
@@ -270,9 +283,10 @@ class TicTacToeState extends State<TicTacToe> {
           builder: (context) => WinScreen(
             playerIcon: Icon(
               Icons.question_mark,
-              color: Colors.orange,
+              color: noOneColor,
             ),
-            playerColor: Colors.orange,
+            playerColor: noOneColor,
+            winText: "Nobody wins!!!",
           ),
         ),
       );
@@ -314,6 +328,7 @@ class TicTacToeState extends State<TicTacToe> {
     }
 
     // this is for set state on user clicked
+
     setState(() {
       _opacity = newOpacity;
       _absorbers = newAbsorbers;
@@ -415,12 +430,11 @@ class TicTacToeState extends State<TicTacToe> {
   @override
   void initState() {
     super.initState();
-    createFullAd();
     createBannerAd();
+    _absorbers = List.generate(9, (index) => false);
+    _opacity = List.generate(9, (_) => 1);
+    opacity = List.generate(9, (_) => 0.6);
   }
-
-  BannerAd? banner;
-  InterstitialAd? fullAd;
 
   void createBannerAd() {
     banner = BannerAd(
@@ -431,33 +445,6 @@ class TicTacToeState extends State<TicTacToe> {
     )..load();
   }
 
-  void createFullAd() {
-    InterstitialAd.load(
-      adUnitId: AdMobService.InterstitialAdUnitId!,
-      request: AdRequest(),
-      adLoadCallback: InterstitialAdLoadCallback(
-        onAdLoaded: (ad) => fullAd = ad,
-        onAdFailedToLoad: (LoadAdError error) => fullAd = null,
-      ),
-    );
-  }
-
-  void showFullAd() {
-    if (fullAd != null) {
-      fullAd!.fullScreenContentCallback = FullScreenContentCallback(
-        onAdDismissedFullScreenContent: (ad) {
-          ad.dispose();
-          createFullAd();
-        },
-        onAdFailedToShowFullScreenContent: (ad, error) {
-          ad.dispose();
-          createFullAd();
-        },
-      );
-      fullAd!.show();
-    }
-  }
-
   Widget getTimer() {
     return widget.time
         ? SizedBox(
@@ -465,15 +452,20 @@ class TicTacToeState extends State<TicTacToe> {
             height: 100,
             child: Stack(fit: StackFit.expand, children: [
               CircularProgressIndicator(
-                color: circularProgress,
+                color: currentPlayer.color,
                 value: maxTime / clockTime,
-                backgroundColor: circularProgressBG,
+                backgroundColor:
+                    currentPlayer.playerBool ? player2.color : player1.color,
                 strokeWidth: 8,
               ),
               Center(
                 child: Text(
                   "$maxTime",
-                  style: symbolStyle,
+                  style: GoogleFonts.fuggles(
+                      textStyle: TextStyle(
+                    fontSize: 48,
+                    color: currentPlayer.color,
+                  )),
                 ),
               ),
             ]),
@@ -490,8 +482,8 @@ class TicTacToeState extends State<TicTacToe> {
     return SafeArea(
       child: WillPopScope(
         onWillPop: () async {
-          final shoudPop = await showAlert(context);
-          return shoudPop ?? false;
+          if (!mounted) return false;
+          return await showAlert(context) ?? false;
         },
         child: Scaffold(
           appBar: AppBar(
@@ -500,6 +492,7 @@ class TicTacToeState extends State<TicTacToe> {
             centerTitle: true,
             leading: IconButton(
               onPressed: () async {
+                if (!mounted) return;
                 bool next = await showAlert(context) ?? false;
                 if (next) Navigator.pop(context);
               },
@@ -556,7 +549,11 @@ class TicTacToeState extends State<TicTacToe> {
                                 Center(
                                   child: Text(
                                     currentPlayer.symbol,
-                                    style: symbolStyle,
+                                    style: GoogleFonts.fuggles(
+                                        textStyle: TextStyle(
+                                      fontSize: 48,
+                                      color: currentPlayer.color,
+                                    )),
                                   ),
                                 ),
                                 Spacer(),

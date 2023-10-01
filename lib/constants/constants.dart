@@ -13,8 +13,6 @@ class Player {
   Player(this.playerBool, this.symbol, this.color, this.icon, this.who);
 }
 
-double disabledOpacity = 0.6;
-
 // setup players
 
 Player player1 = Player(true, "O", playerColor1,
@@ -33,23 +31,26 @@ Color playerColor2 = Colors.red;
 // bot color
 Color botColor = Color.fromARGB(255, 255, 0, 0);
 // mini game border color
-Color miniTicTacToeFrame = Colors.grey;
+Color frameBorder = Colors.grey;
 // mini game bg color and won game bg
 Color miniTicTacToeFill = Color.fromARGB(255, 37, 39, 41);
 // main game border color
 Color ticTacToeFrame = Color.fromARGB(255, 27, 123, 201);
 // main game bg color
 Color ticTacToeFill = Colors.black;
-// circular progrss time color
-Color circularProgress = Color.fromARGB(255, 64, 255, 112);
-// circular progrss bg color - apply after run
-Color circularProgressBG = Color.fromARGB(255, 255, 255, 255);
 // app bar color
 Color appBar = Color.fromARGB(255, 138, 141, 143);
 // changing color
 Color changeColor = Colors.black;
 // color of game font
 Color gameFontColor = Colors.white;
+// game symbols color
+Color gameSymbolColor = Colors.red;
+// won box bg
+Color wonBoxBg = Colors.black;
+// nobody win
+Color noOneColor = Colors.orange;
+
 // gredient bg of main scaffold
 Gradient mainBgGredient = LinearGradient(
   begin: Alignment.topLeft,
@@ -73,31 +74,9 @@ Color iconColor = Colors.black;
 // fonts
 
 // Alertbox font
-TextStyle alertBox = GoogleFonts.dmSerifDisplay(
+TextStyle alertBox = GoogleFonts.inriaSans(
     textStyle: TextStyle(
   fontSize: 24,
-  color: gameFontColor,
-));
-
-// mini game font style
-TextStyle minisymbolStyle = GoogleFonts.fuggles(
-    textStyle: TextStyle(
-  fontSize: 16,
-  fontWeight: FontWeight.w900,
-  color: gameFontColor,
-));
-
-// Player represent symbol style
-TextStyle symbolStyle = GoogleFonts.fuggles(
-    textStyle: TextStyle(
-  fontSize: 48,
-  color: gameFontColor,
-));
-
-// Drawer text style
-TextStyle drawerStyle = GoogleFonts.inriaSans(
-    textStyle: TextStyle(
-  fontSize: 16,
   color: gameFontColor,
 ));
 
@@ -123,7 +102,6 @@ const double adjustValue = 20;
 // Values
 
 List<bool> absorberS = List.generate(9, (_) => true);
-List<double> opacitY = List.generate(9, (_) => disabledOpacity);
 
 // game text
 
@@ -133,7 +111,3 @@ TextStyle gameText = GoogleFonts.inriaSans(
   fontSize: 26,
   color: Colors.black,
 ));
-
-// Datas
-String sourceCode = "https://daniblogs.com/BF/835848xh";
-String developer = "insan20011227@gmail.com";

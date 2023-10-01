@@ -76,6 +76,7 @@ class _InstructionScreenState extends State<InstructionScreen> {
                       child: TextButton(
                         onPressed: () async {
                           await dataIO.firstTimeSet();
+                          if (!mounted) return;
                           changeScreen(context);
                         },
                         child: Text("Skip"),
@@ -112,6 +113,7 @@ class _InstructionScreenState extends State<InstructionScreen> {
                             child: TextButton(
                               onPressed: () async {
                                 await dataIO.firstTimeSet();
+                                if (!mounted) return;
                                 changeScreen(context);
                               },
                               child: Text("Play"),

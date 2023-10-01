@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:tic_tac_toe_pro/constants/constants.dart';
 
 class MiniTicTacToe extends StatefulWidget {
@@ -97,14 +98,21 @@ class MiniTicTacToeState extends State<MiniTicTacToe> {
                   decoration: BoxDecoration(
                     border: Border.all(
                       width: 1.5,
-                      color: miniTicTacToeFrame,
+                      color: frameBorder,
                     ),
                     color: colorChange[index] ? changeColor : miniTicTacToeFill,
                   ),
                   child: Center(
                     child: Text(
                       displayXO[index],
-                      style: minisymbolStyle,
+                      style: GoogleFonts.fuggles(
+                          textStyle: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w900,
+                        color: displayXO[index] == player1.symbol
+                            ? player1.color
+                            : player2.color,
+                      )),
                     ),
                   ),
                 ),
