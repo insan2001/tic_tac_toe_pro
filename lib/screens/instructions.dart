@@ -50,6 +50,10 @@ class _InstructionScreenState extends State<InstructionScreen> {
       child: Scaffold(
         body: Stack(
           children: [
+            Container(
+              height: MediaQuery.of(context).size.height,
+              color: Colors.grey,
+            ),
             PageView.builder(
               controller: _pageController,
               onPageChanged: (int page) {
