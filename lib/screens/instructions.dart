@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:tic_tac_toe_pro/functions/dataIO.dart';
-import 'package:tic_tac_toe_pro/screens/options.dart';
+import 'package:tic_tac_toe_pro/screens/home.dart';
 
 void changeScreen(context) {
   Navigator.push(
     context,
     MaterialPageRoute(
-      builder: (context) => GameOptions(),
+      builder: (context) => HomeScreen(),
     ),
   );
 }
@@ -79,7 +78,7 @@ class _InstructionScreenState extends State<InstructionScreen> {
                       padding: const EdgeInsets.all(4.0),
                       child: TextButton(
                         onPressed: () async {
-                          await dataIO.firstTimeSet();
+                          // first time name
                           if (!mounted) return;
                           changeScreen(context);
                         },
@@ -116,7 +115,6 @@ class _InstructionScreenState extends State<InstructionScreen> {
                             padding: const EdgeInsets.all(4.0),
                             child: TextButton(
                               onPressed: () async {
-                                await dataIO.firstTimeSet();
                                 if (!mounted) return;
                                 changeScreen(context);
                               },

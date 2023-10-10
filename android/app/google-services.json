@@ -1,0 +1,31 @@
+{
+  "project_info": {
+    "project_number": "496892134026",
+    "firebase_url": "https://tic-tac-toe-pro-99928755-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "tic-tac-toe-pro-99928755",
+    "storage_bucket": "tic-tac-toe-pro-99928755.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:496892134026:android:f8c1e649f3d6f22bc66373",
+        "android_client_info": {
+          "package_name": "com.insanj.tttp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDIt3ijhYZ1_WEXgNYXAM8jmExk8rgV70A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      },
+      "admob_app_id": "ca-app-pub-9320493450035769~7429369273"
+    }
+  ],
+  "configuration_version": "1"
+}
