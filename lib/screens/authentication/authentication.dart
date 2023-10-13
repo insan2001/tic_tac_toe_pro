@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:tic_tac_toe_pro/screens/authentication/signIn.dart';
 import 'package:tic_tac_toe_pro/screens/authentication/signUp.dart';
 import 'package:tic_tac_toe_pro/screens/home.dart';
-import 'package:tic_tac_toe_pro/screens/homeScreen.dart';
 
 class Authentication extends StatefulWidget {
   const Authentication({super.key});
@@ -23,7 +22,7 @@ class AuthenticationState extends State<Authentication> {
         stream: FirebaseAuth.instance.authStateChanges(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            return MyWidget();
+            return HomeScreen();
           } else {
             return isLogin
                 ? SignInScreen(onClickSignUp: toggle)

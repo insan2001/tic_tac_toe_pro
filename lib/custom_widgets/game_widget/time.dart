@@ -1,16 +1,13 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:tic_tac_toe_pro/values/constants.dart';
+import 'package:provider/provider.dart';
+import 'package:tic_tac_toe_pro/providers/game_providers.dart';
 
 const clockTime = 5;
 int currentTime = 5;
 
 class CountDownTimer extends StatefulWidget {
-  final Player currentPlayer;
-  final Function changePlayer;
-
-  const CountDownTimer(
-      {super.key, required this.currentPlayer, required this.changePlayer});
+  const CountDownTimer({super.key});
 
   @override
   State<CountDownTimer> createState() => CountDownTimerState();
@@ -20,6 +17,7 @@ class CountDownTimerState extends State<CountDownTimer> {
   Timer? timer;
 
   startTimer() {
+    final gameDetails = Provider.of<GameProvider>(context, listen: false);
     timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (currentTime > 1) {
         setState(() {
@@ -29,7 +27,7 @@ class CountDownTimerState extends State<CountDownTimer> {
         setState(() {
           currentTime = clockTime;
         });
-        widget.changePlayer();
+        gameDetails.changePlayer();
       }
     });
   }
@@ -61,11 +59,11 @@ class CountDownTimerState extends State<CountDownTimer> {
         height: 100,
         child: Stack(fit: StackFit.expand, children: [
           CircularProgressIndicator(
-            color: widget.currentPlayer.color,
+            color: context.watch<GameProvider>().currentPlayer.color,
             value: currentTime / clockTime,
             strokeWidth: 8,
           ),
-          widget.currentPlayer.profileImg,
+          context.watch<GameProvider>().currentPlayer.profileImg,
         ]),
       ),
     );

@@ -1,7 +1,11 @@
+// import 'dart:js';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:provider/provider.dart';
+import 'package:tic_tac_toe_pro/providers/game_providers.dart';
 import 'package:tic_tac_toe_pro/screens/authentication/authentication.dart';
 import 'package:tic_tac_toe_pro/screens/authentication/signIn.dart';
 import 'package:tic_tac_toe_pro/screens/authentication/signUp.dart';
@@ -28,7 +32,12 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  runApp(const MyApp());
+  runApp(MultiProvider(
+    providers: [
+      ChangeNotifierProvider(create: (context) => GameProvider()),
+    ],
+    child: MyApp(),
+  ));
 }
 
 final navigatorKey = GlobalKey<NavigatorState>();
@@ -43,9 +52,9 @@ class MyApp extends StatelessWidget {
       navigatorKey: navigatorKey,
       scaffoldMessengerKey: scafKey,
       // home: GameBox(),
-      // home: HomeScreen(),
+      home: HomeScreen(),
       // home: GameScreen(proMode: true),
-      home: Authentication(),
+      // home: Authentication(),
       // home: MiniGame(displayXO: ["", "", "", "", "", "", "", "", ""]),
     );
   }

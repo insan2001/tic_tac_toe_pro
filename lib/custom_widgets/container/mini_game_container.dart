@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
+import 'package:tic_tac_toe_pro/providers/game_providers.dart';
 import 'package:tic_tac_toe_pro/values/constants.dart';
 import 'package:tic_tac_toe_pro/custom_widgets/game_widget/ticTacToe.dart';
 import 'package:tic_tac_toe_pro/values/variable.dart';
@@ -7,20 +9,13 @@ import 'package:tic_tac_toe_pro/values/variable.dart';
 const double borderWidth = 1.5;
 const Color borderColor = Colors.black;
 const Color containerBgColor = Color.fromARGB(255, 37, 39, 41);
-const Color onTapColor = Colors.green;
+const Color onTapColor = Colors.black;
 
 class MiniGame extends StatefulWidget {
-  final Player player;
   final int parentIndex;
-  final Function stateSetterForGame;
   final Color opacity;
 
-  MiniGame(
-      {super.key,
-      required this.player,
-      required this.parentIndex,
-      required this.stateSetterForGame,
-      required this.opacity});
+  MiniGame({super.key, required this.parentIndex, required this.opacity});
 
   @override
   State<MiniGame> createState() => MiniGameState();
@@ -45,7 +40,7 @@ class MiniGameState extends State<MiniGame> {
 
   @override
   Widget build(BuildContext context) {
-    List<String> displayXO = displayXOList[widget.parentIndex];
+    final gameDetails = Provider.of<GameProvider>(context, listen: false);
     return Padding(
       padding: const EdgeInsets.all(4.0),
       child: GridView.builder(
@@ -56,15 +51,10 @@ class MiniGameState extends State<MiniGame> {
         itemBuilder: (BuildContext context, int index) => GestureDetector(
           onTap: () {
             resetColor();
-            setState(() {
-              if (displayXO[index] == "") {
-                displayXO[index] = widget.player.symbol;
-                widget.stateSetterForGame(widget.parentIndex, index);
-              }
-              // tapped cell identify
-              onTapColorChange(index);
-              resetColor = onColorReset;
-            });
+            gameDetails.updateBoard(
+                widget.parentIndex, index, context, onTapColorChange);
+            // tapped cell identify
+            resetColor = onColorReset;
           },
           child: TicTacToe(
             bgColor:
@@ -76,12 +66,15 @@ class MiniGameState extends State<MiniGame> {
               child: Opacity(
                 opacity: 1,
                 child: Text(
-                  displayXO[index],
+                  context.read<GameProvider>().displayXOList[widget.parentIndex]
+                      [index],
                   style: GoogleFonts.fuggles(
                     textStyle: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
-                      color: displayXO[index] == player1.symbol
+                      color: gameDetails.displayXOList[widget.parentIndex]
+                                  [index] ==
+                              player1.symbol
                           ? player1.color
                           : player2.color,
                     ),

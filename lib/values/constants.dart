@@ -1,6 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:tic_tac_toe_pro/custom_widgets/container/game_container.dart';
+import 'package:tic_tac_toe_pro/custom_widgets/game_widget/time.dart';
 
 class Player {
   final bool playerBool;
@@ -100,3 +102,8 @@ final gameNameStyle = GoogleFonts.inriaSans(
 ));
 
 Widget gameNameText = Text(gameName, style: gameNameStyle);
+
+final timerkey = GlobalKey<CountDownTimerState>();
+final gameBoxKey = GlobalKey<GameBoxContainerState>();
+
+late bool proMode;

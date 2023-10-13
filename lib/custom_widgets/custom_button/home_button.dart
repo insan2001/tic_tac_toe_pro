@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tic_tac_toe_pro/screens/game.dart';
+import 'package:tic_tac_toe_pro/values/constants.dart';
 
 const homeButtonGredient = LinearGradient(
   begin: Alignment.topLeft,
@@ -51,10 +52,11 @@ Widget homeButton(
   // mode true for pro
   return GestureDetector(
     onTap: () {
+      proMode = mode;
       Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (_) => GameScreen(proMode: mode),
+            builder: (_) => GameScreen(),
           ));
     },
     child: Container(

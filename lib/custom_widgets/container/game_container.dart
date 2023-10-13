@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import 'package:tic_tac_toe_pro/custom_widgets/container/mini_game_container.dart';
 import 'package:tic_tac_toe_pro/custom_widgets/game_widget/ticTacToe.dart';
+import 'package:tic_tac_toe_pro/providers/game_providers.dart';
 import 'package:tic_tac_toe_pro/values/constants.dart';
+import 'package:tic_tac_toe_pro/values/variable.dart';
 import 'package:tic_tac_toe_pro/values/variable.dart';
 
 const ticTacToeColor = Colors.black;
 const defaultFrameColor = Colors.black;
-const disabledFrameColor = Colors.black;
+const disabledFrameColor = Colors.grey;
 
 class GameBoxContainer extends StatefulWidget {
-  final Player player;
-  final Function stateSetterForGame;
-  const GameBoxContainer(
-      {super.key, required this.player, required this.stateSetterForGame});
+  const GameBoxContainer({super.key});
 
   @override
   State<GameBoxContainer> createState() => GameBoxContainerState();
@@ -23,39 +23,27 @@ class GameBoxContainerState extends State<GameBoxContainer> {
   List<bool> absorb = List.generate(9, (_) => false);
   List<Color> opacity = List.generate(9, (_) => defaultFrameColor);
 
-  selectedFrameColorChange(Color color, int index) {
-    List<Color> newOpacity = List.generate(9, (_) => disabledFrameColor);
-    newOpacity[index] = color;
-    setState(() {
-      opacity = newOpacity;
-    });
-  }
-
   proGame(int childIndex) {
     List<bool> newAbsorb = List.generate(9, (_) => true);
+    List<Color> newOpacity = List.generate(9, (_) => disabledFrameColor);
 
     int index = childIndex;
 
     for (int i = 0; i < 9; i++) {
-      if (!capturedBoxIndex.contains(index)) {
+      if (!context.read<GameProvider>().capturedBoxIndex.contains(index)) {
         break;
-      } else if (!capturedBoxIndex.contains(i)) {
+      } else if (!context.read<GameProvider>().capturedBoxIndex.contains(i)) {
         index = i;
         break;
       }
     }
     // this will control absorbable and index
     newAbsorb[index] = false;
+    newOpacity[index] = defaultFrameColor;
 
     setState(() {
       absorb = newAbsorb;
-    });
-  }
-
-  capturedBoxMarker(int parentIndex, String symbol) {
-    setState(() {
-      capturedBoxIndex.add(parentIndex);
-      capturedBoxes[parentIndex] = symbol;
+      opacity = newOpacity;
     });
   }
 
@@ -71,7 +59,7 @@ class GameBoxContainerState extends State<GameBoxContainer> {
           physics: const NeverScrollableScrollPhysics(),
           children: List<Widget>.generate(
             9,
-            (index) => capturedBoxes[index] == ""
+            (index) => context.watch<GameProvider>().capturedBoxes[index] == ""
                 ? AbsorbPointer(
                     absorbing: absorb[index],
                     child: TicTacToe(
@@ -80,9 +68,7 @@ class GameBoxContainerState extends State<GameBoxContainer> {
                       borderBool: ticTacToeBorder[index],
                       bgColor: Colors.transparent,
                       child: MiniGame(
-                        player: widget.player,
                         parentIndex: index,
-                        stateSetterForGame: widget.stateSetterForGame,
                         opacity: opacity[index],
                       ),
                     ),
@@ -94,14 +80,20 @@ class GameBoxContainerState extends State<GameBoxContainer> {
                     bgColor: Colors.transparent,
                     child: Center(
                       child: Text(
-                        capturedBoxes[index],
+                        context.watch<GameProvider>().capturedBoxes[index],
                         style: GoogleFonts.fuggles(
                           textStyle: TextStyle(
                             fontSize: 84,
                             fontWeight: FontWeight.bold,
-                            color: capturedBoxes[index] == player1.symbol
+                            color: context
+                                        .watch<GameProvider>()
+                                        .capturedBoxes[index] ==
+                                    player1.symbol
                                 ? player1.color
-                                : capturedBoxes[index] == player2.symbol
+                                : context
+                                            .watch<GameProvider>()
+                                            .capturedBoxes[index] ==
+                                        player2.symbol
                                     ? player2.color
                                     : nobodyColor,
                           ),

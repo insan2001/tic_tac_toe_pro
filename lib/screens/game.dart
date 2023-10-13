@@ -1,48 +1,37 @@
 import 'package:flutter/material.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:provider/provider.dart';
 import 'package:tic_tac_toe_pro/custom_widgets/container/game_container.dart';
 import 'package:tic_tac_toe_pro/custom_widgets/game_widget/time.dart';
+import 'package:tic_tac_toe_pro/functions/ads.dart';
 import 'package:tic_tac_toe_pro/functions/game_changes_on_click.dart';
 import 'package:tic_tac_toe_pro/values/constants.dart';
 import 'package:tic_tac_toe_pro/values/variable.dart';
 
 class GameScreen extends StatefulWidget {
-  final bool proMode;
-  const GameScreen({super.key, required this.proMode});
+  const GameScreen({super.key});
 
   @override
   State<GameScreen> createState() => _GameScreenState();
 }
 
 class _GameScreenState extends State<GameScreen> {
-  late Player currentPlayer;
-  final timerkey = GlobalKey<CountDownTimerState>();
-  final gameBoxKey = GlobalKey<GameBoxContainerState>();
-
-  changePlayeronTime() {
-    setState(() {
-      currentPlayer = currentPlayer == player1 ? player2 : player1;
-      gameBoxKey.currentState?.opacity[previousIndex] = currentPlayer.color;
-    });
-  }
-
-  changePlayerOnClick(int childIndex) {
-    setState(() {
-      currentPlayer = currentPlayer == player1 ? player2 : player1;
-      gameBoxKey.currentState
-          ?.selectedFrameColorChange(currentPlayer.color, childIndex);
-    });
-  }
-
-  setStateForMainGame(int parentIndex, int childIndex) {
-    onClickHandler(parentIndex, childIndex, timerkey, gameBoxKey, currentPlayer,
-        widget.proMode);
-    changePlayerOnClick(childIndex);
-  }
+  BannerAd? banner;
 
   @override
   void initState() {
     super.initState();
-    currentPlayer = player1;
+    whoPlays = player1;
+    createBannerAd();
+  }
+
+  void createBannerAd() {
+    banner = BannerAd(
+      size: AdSize.fullBanner,
+      adUnitId: AdMobService.BannerAdUnitId!,
+      listener: AdMobService.bannerListener,
+      request: AdRequest(),
+    )..load();
   }
 
   @override
@@ -66,21 +55,25 @@ class _GameScreenState extends State<GameScreen> {
               flex: 1,
               child: CountDownTimer(
                 key: timerkey,
-                currentPlayer: currentPlayer,
-                changePlayer: changePlayeronTime,
               ),
             ),
             Expanded(
               flex: 3,
-              child: GameBoxContainer(
-                key: gameBoxKey,
-                player: currentPlayer,
-                stateSetterForGame: setStateForMainGame,
-              ),
+              child: GameBoxContainer(key: gameBoxKey),
             ),
           ],
         ),
       ),
+      bottomNavigationBar: banner == null
+          ? Container(
+              color: Colors.transparent,
+              height: 10,
+            )
+          : Container(
+              margin: const EdgeInsets.only(bottom: 12),
+              height: 52,
+              child: AdWidget(ad: banner!),
+            ),
     );
   }
 }
