@@ -3,15 +3,32 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tic_tac_toe_pro/custom_widgets/container/game_container.dart';
 import 'package:tic_tac_toe_pro/custom_widgets/game_widget/time.dart';
+import 'package:uuid/uuid.dart';
 
 class Player {
-  final bool playerBool;
   final String symbol;
   final Color color;
   final Icon icon;
-  final Widget profileImg;
+  String profileImg;
+  String name;
+  String ID;
 
-  Player(this.playerBool, this.symbol, this.color, this.icon, this.profileImg);
+  Player(
+      this.symbol, this.color, this.icon, this.profileImg, this.name, this.ID);
+
+  Map<String, String> playerJson() {
+    return {
+      "profileImg": this.profileImg,
+      "name": this.name,
+      "id": this.ID,
+    };
+  }
+
+  jsonPlayer(jsonData) {
+    name = jsonData["name"];
+    profileImg = jsonData["profileImg"];
+    ID = jsonData["id"];
+  }
 }
 
 // player1 color
@@ -30,39 +47,8 @@ String playerImg2 =
 
 // setup players
 
-Player player1 = Player(
-  true,
-  "O",
-  playerColor1,
-  Icon(Icons.perm_identity_outlined, color: playerColor1),
-  CircleAvatar(
-    child: ClipOval(
-      child: CachedNetworkImage(
-        imageUrl: playerImg1,
-        progressIndicatorBuilder: (context, url, downloadProgress) =>
-            CircularProgressIndicator(value: downloadProgress.progress),
-        errorWidget: (context, url, error) => Icon(Icons.error),
-      ),
-    ),
-  ),
-);
-
-Player player2 = Player(
-  false,
-  "X",
-  playerColor2,
-  Icon(Icons.perm_identity_outlined, color: playerColor2),
-  CircleAvatar(
-    child: ClipOval(
-      child: CachedNetworkImage(
-        imageUrl: playerImg2,
-        progressIndicatorBuilder: (context, url, downloadProgress) =>
-            CircularProgressIndicator(value: downloadProgress.progress),
-        errorWidget: (context, url, error) => Icon(Icons.error),
-      ),
-    ),
-  ),
-);
+late Player player;
+late Player opponent;
 
 List<List<bool>> ticTacToeBorder = [
   // l,t,r,b
@@ -94,7 +80,7 @@ Gradient blackAndWhitegredientBG = const LinearGradient(
   tileMode: TileMode.mirror,
 );
 
-const gameName = "Tic Tac Toe Pro";
+const gameName = "Capture The Box";
 final gameNameStyle = GoogleFonts.inriaSans(
     textStyle: const TextStyle(
   fontSize: 26,
@@ -107,3 +93,10 @@ final timerkey = GlobalKey<CountDownTimerState>();
 final gameBoxKey = GlobalKey<GameBoxContainerState>();
 
 late bool proMode;
+final String roomID = Uuid().v1();
+
+final signUpStyle = GoogleFonts.openSans(
+    textStyle: TextStyle(
+  fontSize: 24,
+  color: Colors.white,
+));

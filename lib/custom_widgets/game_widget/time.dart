@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tic_tac_toe_pro/providers/game_providers.dart';
@@ -63,7 +64,16 @@ class CountDownTimerState extends State<CountDownTimer> {
             value: currentTime / clockTime,
             strokeWidth: 8,
           ),
-          context.watch<GameProvider>().currentPlayer.profileImg,
+          CircleAvatar(
+            child: ClipOval(
+              child: CachedNetworkImage(
+                imageUrl: context.read<GameProvider>().currentPlayer.profileImg,
+                progressIndicatorBuilder: (context, url, downloadProgress) =>
+                    CircularProgressIndicator(value: downloadProgress.progress),
+                errorWidget: (context, url, error) => Icon(Icons.error),
+              ),
+            ),
+          ),
         ]),
       ),
     );

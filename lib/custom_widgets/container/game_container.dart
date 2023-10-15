@@ -88,13 +88,13 @@ class GameBoxContainerState extends State<GameBoxContainer> {
                             color: context
                                         .watch<GameProvider>()
                                         .capturedBoxes[index] ==
-                                    player1.symbol
-                                ? player1.color
+                                    player.symbol
+                                ? opponent.color
                                 : context
                                             .watch<GameProvider>()
                                             .capturedBoxes[index] ==
-                                        player2.symbol
-                                    ? player2.color
+                                        opponent.symbol
+                                    ? opponent.color
                                     : nobodyColor,
                           ),
                         ),

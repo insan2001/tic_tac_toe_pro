@@ -13,7 +13,7 @@ class GameProvider extends ChangeNotifier {
   Player currentPlayer = whoPlays;
 
   void changePlayer() {
-    currentPlayer = currentPlayer == player1 ? player2 : player1;
+    currentPlayer = currentPlayer == player ? opponent : player;
     notifyListeners();
   }
 

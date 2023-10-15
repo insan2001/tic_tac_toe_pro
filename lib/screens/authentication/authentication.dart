@@ -1,6 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:tic_tac_toe_pro/screens/authentication/signIn.dart';
 import 'package:tic_tac_toe_pro/screens/authentication/signUp.dart';
 import 'package:tic_tac_toe_pro/screens/home.dart';
 
@@ -12,10 +11,6 @@ class Authentication extends StatefulWidget {
 }
 
 class AuthenticationState extends State<Authentication> {
-  bool isLogin = false;
-
-  void toggle() => setState(() => isLogin = !isLogin);
-
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<User?>(
@@ -24,9 +19,7 @@ class AuthenticationState extends State<Authentication> {
           if (snapshot.hasData) {
             return HomeScreen();
           } else {
-            return isLogin
-                ? SignInScreen(onClickSignUp: toggle)
-                : SignUpScreen(onClickSignUp: toggle);
+            return SignUpScreen();
           }
         });
   }

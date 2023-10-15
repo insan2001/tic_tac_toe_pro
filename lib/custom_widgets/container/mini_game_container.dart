@@ -74,9 +74,9 @@ class MiniGameState extends State<MiniGame> {
                       fontWeight: FontWeight.bold,
                       color: gameDetails.displayXOList[widget.parentIndex]
                                   [index] ==
-                              player1.symbol
-                          ? player1.color
-                          : player2.color,
+                              player.symbol
+                          ? player.color
+                          : opponent.color,
                     ),
                   ),
                 ),

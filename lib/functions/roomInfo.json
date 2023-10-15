@@ -14,9 +14,9 @@
       ],
 
       "roomOwner":{
-        "id": "OwnerID"
-        
+        "id": "OwnerID"        
       },
+
       "joinedPlayer": {
         "id": "JoinedPlayerID"
       },

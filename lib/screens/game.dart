@@ -5,6 +5,7 @@ import 'package:tic_tac_toe_pro/custom_widgets/container/game_container.dart';
 import 'package:tic_tac_toe_pro/custom_widgets/game_widget/time.dart';
 import 'package:tic_tac_toe_pro/functions/ads.dart';
 import 'package:tic_tac_toe_pro/functions/game_changes_on_click.dart';
+import 'package:tic_tac_toe_pro/functions/game_initializer.dart';
 import 'package:tic_tac_toe_pro/values/constants.dart';
 import 'package:tic_tac_toe_pro/values/variable.dart';
 
@@ -21,7 +22,15 @@ class _GameScreenState extends State<GameScreen> {
   @override
   void initState() {
     super.initState();
-    whoPlays = player1;
+
+    // player = Player("O", playerColor1,
+    //     Icon(Icons.perm_identity_outlined, color: playerColor1), playerImg1);
+
+    // opponent = Player("X", playerColor2,
+    //     Icon(Icons.perm_identity_outlined, color: playerColor2), playerImg2);
+
+    players();
+    whoPlays = player;
     createBannerAd();
   }
 

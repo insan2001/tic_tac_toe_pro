@@ -7,10 +7,6 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:provider/provider.dart';
 import 'package:tic_tac_toe_pro/providers/game_providers.dart';
 import 'package:tic_tac_toe_pro/screens/authentication/authentication.dart';
-import 'package:tic_tac_toe_pro/screens/authentication/signIn.dart';
-import 'package:tic_tac_toe_pro/screens/authentication/signUp.dart';
-import 'package:tic_tac_toe_pro/screens/game.dart';
-import 'package:tic_tac_toe_pro/screens/home.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 
@@ -52,7 +48,8 @@ class MyApp extends StatelessWidget {
       navigatorKey: navigatorKey,
       scaffoldMessengerKey: scafKey,
       // home: GameBox(),
-      home: HomeScreen(),
+      home: Authentication(),
+      // home: Fire(),
       // home: GameScreen(proMode: true),
       // home: Authentication(),
       // home: MiniGame(displayXO: ["", "", "", "", "", "", "", "", ""]),
