@@ -3,6 +3,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tic_tac_toe_pro/providers/game_providers.dart';
+import 'package:tic_tac_toe_pro/values/constants.dart';
 
 const clockTime = 5;
 int currentTime = 5;
@@ -60,7 +61,9 @@ class CountDownTimerState extends State<CountDownTimer> {
         height: 100,
         child: Stack(fit: StackFit.expand, children: [
           CircularProgressIndicator(
-            color: context.watch<GameProvider>().currentPlayer.color,
+            color: context.watch<GameProvider>().isMePlays
+                ? playerColor
+                : opponentColor,
             value: currentTime / clockTime,
             strokeWidth: 8,
           ),

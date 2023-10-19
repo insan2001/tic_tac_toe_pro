@@ -1,9 +1,7 @@
-import 'package:email_validator/email_validator.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:tic_tac_toe_pro/custom_widgets/authScreen/emailTextField.dart';
 import 'package:tic_tac_toe_pro/custom_widgets/authScreen/titileText.dart';
-import 'package:tic_tac_toe_pro/main.dart';
+import 'package:tic_tac_toe_pro/functions/authentication.dart';
 import 'package:tic_tac_toe_pro/values/constants.dart';
 
 final emailControl = TextEditingController();
@@ -57,17 +55,8 @@ class ForgotPassword extends StatelessWidget {
                             borderRadius: BorderRadius.circular(20),
                           ),
                           child: TextButton(
-                              onPressed: () async {
-                                try {
-                                  await FirebaseAuth.instance
-                                      .sendPasswordResetEmail(
-                                          email: emailControl.text.trim());
-                                  scafKey.currentState?.showSnackBar(SnackBar(
-                                      content: Text("Reset mail was sent.")));
-                                } on FirebaseAuthException catch (e) {
-                                  scafKey.currentState?.showSnackBar(
-                                      SnackBar(content: Text(e.message ?? "")));
-                                }
+                              onPressed: () {
+                                forgotPassword(context, emailControl);
                               },
                               child: Text(
                                 "Reset Password",

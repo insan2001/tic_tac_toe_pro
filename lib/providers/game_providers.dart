@@ -6,22 +6,33 @@ import 'package:tic_tac_toe_pro/values/variable.dart';
 class GameProvider extends ChangeNotifier {
   List<List<String>> displayXOList =
       List.generate(9, (_) => List.generate(9, (_) => ""));
+  List<List<bool>> colorList =
+      List.generate(9, (_) => List.generate(9, (_) => false));
 
   List<String> capturedBoxes = List.generate(9, (_) => "");
+
   List<int> capturedBoxIndex = [];
 
-  Player currentPlayer = whoPlays;
+  late Player currentPlayer;
+  late bool isMePlays;
 
   void changePlayer() {
-    currentPlayer = currentPlayer == player ? opponent : player;
+    // this current player will ulpdated based on id
+    // this function update player based on firebase by changing player id
+    currentPlayer = currentPlayer == me ? opponent : me;
+    isMePlays = !isMePlays;
     notifyListeners();
   }
 
-  void updateBoard(int parentIndex, int index, BuildContext context,
-      Function(int index) onTapColorChange) {
+  void updateBoard(
+    int parentIndex,
+    int index,
+    BuildContext context,
+  ) {
     if (displayXOList[parentIndex][index] == "") {
       displayXOList[parentIndex][index] = currentPlayer.symbol;
-      onTapColorChange(index);
+      colorList[parentIndex][index] = true;
+
       onClickHandler(parentIndex, index, context);
       notifyListeners();
     }

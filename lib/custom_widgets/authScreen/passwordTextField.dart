@@ -1,9 +1,15 @@
-import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 
-class PasswordTextField extends StatelessWidget {
+class PasswordTextField extends StatefulWidget {
   final TextEditingController controller;
   const PasswordTextField({super.key, required this.controller});
+
+  @override
+  State<PasswordTextField> createState() => _PasswordTextFieldState();
+}
+
+class _PasswordTextFieldState extends State<PasswordTextField> {
+  bool showPassord = true;
 
   @override
   Widget build(BuildContext context) {
@@ -21,13 +27,22 @@ class PasswordTextField extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.only(left: 10, right: 5),
             child: TextField(
-              controller: controller,
+              obscureText: showPassord,
+              controller: widget.controller,
               decoration: InputDecoration(
                 border: InputBorder.none,
                 hintText: "Enter Your password",
                 prefixIcon: Icon(
                   Icons.lock,
                 ),
+                suffixIcon: IconButton(
+                    onPressed: () {
+                      setState(() {
+                        showPassord = !showPassord;
+                      });
+                    },
+                    icon: Icon(
+                        showPassord ? Icons.visibility : Icons.visibility_off)),
                 labelText: "Password",
               ),
             ),

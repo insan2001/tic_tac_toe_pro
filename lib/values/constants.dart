@@ -1,26 +1,34 @@
-import 'package:cached_network_image/cached_network_image.dart';
+import 'dart:io';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:tic_tac_toe_pro/custom_widgets/container/game_container.dart';
 import 'package:tic_tac_toe_pro/custom_widgets/game_widget/time.dart';
 import 'package:uuid/uuid.dart';
 
 class Player {
-  final String symbol;
-  final Color color;
-  final Icon icon;
+  String symbol;
   String profileImg;
   String name;
   String ID;
 
   Player(
-      this.symbol, this.color, this.icon, this.profileImg, this.name, this.ID);
+    this.ID,
+    this.name,
+    this.profileImg,
+    this.symbol,
+  );
 
   Map<String, String> playerJson() {
     return {
-      "profileImg": this.profileImg,
-      "name": this.name,
       "id": this.ID,
+      "name": this.name,
+      "profileImg": this.profileImg,
+      "symbol": this.symbol,
     };
   }
 
@@ -28,29 +36,18 @@ class Player {
     name = jsonData["name"];
     profileImg = jsonData["profileImg"];
     ID = jsonData["id"];
+    symbol = jsonData["symbol"];
   }
 }
 
 // player1 color
-Color playerColor1 = Colors.blue;
+Color playerColor = Colors.blue;
 // player2 color
-Color playerColor2 = Colors.red;
-// bot color
-Color botColor = const Color.fromARGB(255, 255, 0, 0);
+Color opponentColor = Colors.red;
 // Nobodies color
 Color nobodyColor = Colors.orange;
 
-String playerImg1 =
-    "https://firebasestorage.googleapis.com/v0/b/tic-tac-toe-pro-99928755.appspot.com/o/myPicSquare.png?alt=media&token=b91612f1-4447-425c-b100-a3cd8d979923&_gl=1*11bxna*_ga*MTYxMTkxOTMwNi4xNjk2MjIxNTg5*_ga_CW55HF8NVT*MTY5NjkwODY1MS4xNi4xLjE2OTY5MDg3MzAuNDIuMC4w";
-String playerImg2 =
-    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRgUNaoFwOOa3sOnMoc8CVUJ65bhS822etxVQ&usqp=CAU";
-
-// setup players
-
-late Player player;
-late Player opponent;
-
-List<List<bool>> ticTacToeBorder = [
+const List<List<bool>> ticTacToeBorder = [
   // l,t,r,b
   [false, false, true, true],
   [true, false, true, true],
@@ -80,23 +77,57 @@ Gradient blackAndWhitegredientBG = const LinearGradient(
   tileMode: TileMode.mirror,
 );
 
+// game name
 const gameName = "Capture The Box";
-final gameNameStyle = GoogleFonts.inriaSans(
-    textStyle: const TextStyle(
-  fontSize: 26,
-  color: Colors.white,
-));
+Widget gameNameText = Text(gameName,
+    style: GoogleFonts.inriaSans(
+        textStyle: const TextStyle(
+      fontSize: 26,
+      color: Colors.white,
+    )));
 
-Widget gameNameText = Text(gameName, style: gameNameStyle);
+// Global keys
 
 final timerkey = GlobalKey<CountDownTimerState>();
 final gameBoxKey = GlobalKey<GameBoxContainerState>();
+final navigatorKey = GlobalKey<NavigatorState>();
+final scafKey = GlobalKey<ScaffoldMessengerState>();
 
 late bool proMode;
 final String roomID = Uuid().v1();
 
-final signUpStyle = GoogleFonts.openSans(
+// font styles
+
+final authButtonStyle = GoogleFonts.openSans(
     textStyle: TextStyle(
   fontSize: 24,
   color: Colors.white,
 ));
+
+final userInfo = GoogleFonts.inriaSans(
+    textStyle: TextStyle(
+  fontSize: 18,
+  color: Colors.black,
+));
+
+// app documents initialize
+
+late Directory appFolder;
+late String appDoc;
+late String profileLoc;
+late String profileLoc2;
+
+initDoc() async {
+  appFolder = await getApplicationDocumentsDirectory();
+  appDoc = "${appFolder.path}/Documents";
+  profileLoc = "$appDoc/profile.jpg";
+  profileLoc2 = "$appDoc/profile2.jpg";
+}
+
+// firebase setups
+
+final auth = FirebaseAuth.instance;
+final storage = FirebaseStorage.instance.ref();
+final profile = storage.child("${auth.currentUser?.uid}.jpg");
+final firestoreUser =
+    FirebaseFirestore.instance.collection("users").doc(auth.currentUser?.uid);

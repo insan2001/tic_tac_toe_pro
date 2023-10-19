@@ -22,22 +22,6 @@ class MiniGame extends StatefulWidget {
 }
 
 class MiniGameState extends State<MiniGame> {
-  List<bool> colorChangeIndicator = List.generate(9, (_) => false);
-
-  onTapColorChange(int index) async {
-    previousIndex = index;
-    setState(() {
-      colorChangeIndicator[index] = true;
-    });
-  }
-
-  onColorReset() {
-    if (mounted)
-      setState(() {
-        colorChangeIndicator[previousIndex] = false;
-      });
-  }
-
   @override
   Widget build(BuildContext context) {
     final gameDetails = Provider.of<GameProvider>(context, listen: false);
@@ -50,15 +34,12 @@ class MiniGameState extends State<MiniGame> {
             const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3),
         itemBuilder: (BuildContext context, int index) => GestureDetector(
           onTap: () {
-            resetColor();
-            gameDetails.updateBoard(
-                widget.parentIndex, index, context, onTapColorChange);
-            // tapped cell identify
-            resetColor = onColorReset;
+            gameDetails.updateBoard(widget.parentIndex, index, context);
           },
           child: TicTacToe(
-            bgColor:
-                colorChangeIndicator[index] ? onTapColor : Colors.transparent,
+            bgColor: gameDetails.colorList[widget.parentIndex][index]
+                ? onTapColor
+                : Colors.transparent,
             borderColor: widget.opacity,
             borderWidth: borderWidth,
             borderBool: ticTacToeBorder[index],
@@ -74,9 +55,9 @@ class MiniGameState extends State<MiniGame> {
                       fontWeight: FontWeight.bold,
                       color: gameDetails.displayXOList[widget.parentIndex]
                                   [index] ==
-                              player.symbol
-                          ? player.color
-                          : opponent.color,
+                              me.symbol
+                          ? playerColor
+                          : opponentColor,
                     ),
                   ),
                 ),

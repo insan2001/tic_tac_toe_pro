@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
+import 'package:tic_tac_toe_pro/providers/game_providers.dart';
 import 'package:tic_tac_toe_pro/values/constants.dart';
 
 const playerInfoBg = Colors.black;
@@ -31,12 +33,19 @@ class PlayerInfo extends StatelessWidget {
               textStyle: TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 18,
-                color: player.color,
+                color: context.watch<GameProvider>().isMePlays
+                    ? playerColor
+                    : opponentColor,
               ),
             ),
           ),
           const Spacer(),
-          player.icon,
+          Icon(
+            Icons.person,
+            color: context.watch<GameProvider>().isMePlays
+                ? playerColor
+                : opponentColor,
+          ),
           const Spacer(),
           Center(
             child: Text(
@@ -44,7 +53,9 @@ class PlayerInfo extends StatelessWidget {
               style: GoogleFonts.fuggles(
                 textStyle: TextStyle(
                   fontSize: 48,
-                  color: player.color,
+                  color: context.watch<GameProvider>().isMePlays
+                      ? playerColor
+                      : opponentColor,
                 ),
               ),
             ),

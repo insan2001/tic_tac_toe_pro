@@ -1,6 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:tic_tac_toe_pro/functions/authentication.dart';
+import 'package:tic_tac_toe_pro/custom_widgets/authScreen/passwordTextField.dart';
+import 'package:tic_tac_toe_pro/values/constants.dart';
 
 Color gameFontColor = Colors.white;
 
@@ -10,9 +12,10 @@ TextStyle alertBox = GoogleFonts.inriaSans(
   color: gameFontColor,
 ));
 
-Future<bool?> signOutPopup(_context) async => showDialog<bool>(
+Future<bool?> deleteWithPassword(_context) async => showDialog<bool>(
       context: _context,
       builder: (context) {
+        final control = TextEditingController();
         return AlertDialog(
           actionsPadding: EdgeInsets.only(
             bottom: 10,
@@ -24,35 +27,31 @@ Future<bool?> signOutPopup(_context) async => showDialog<bool>(
             ),
           ),
           title: Text(
-            "Sign out",
+            "Verify your password to delete",
             style: TextStyle(color: Colors.white, fontSize: 24),
           ),
-          content: Flexible(
-            child: Text(
-              "Do you want to sign out?",
-              style: TextStyle(color: Colors.white, fontSize: 18),
-            ),
-          ),
-          backgroundColor: Colors.black,
+          content: PasswordTextField(controller: control),
+          backgroundColor: Colors.grey,
           elevation: 12,
           shadowColor: Colors.grey,
           actions: [
             TextButton(
               onPressed: () {
                 Navigator.pop(context, true);
-                signOut();
+                final credentials = EmailAuthProvider.credential(
+                    email: auth.currentUser?.email ?? "",
+                    password: control.text.trim());
+                try {
+                  auth.currentUser?.reauthenticateWithCredential(credentials);
+                  auth.currentUser?.delete();
+                } catch (e) {
+                  print(e);
+                  scafKey.currentState
+                      ?.showSnackBar(SnackBar(content: Text("Wrong password")));
+                }
               },
               child: Text(
-                "Yes",
-                style: alertBox,
-              ),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context, false);
-              },
-              child: Text(
-                "no",
+                "Delete",
                 style: alertBox,
               ),
             ),

@@ -14,7 +14,7 @@ class TitleText extends StatelessWidget {
           gameName,
           textStyle: GoogleFonts.pacifico(
               textStyle: const TextStyle(
-            fontSize: 40,
+            fontSize: 36,
             color: Colors.white,
           )),
           colors: [

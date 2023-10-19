@@ -6,7 +6,6 @@ import 'package:tic_tac_toe_pro/custom_widgets/game_widget/ticTacToe.dart';
 import 'package:tic_tac_toe_pro/providers/game_providers.dart';
 import 'package:tic_tac_toe_pro/values/constants.dart';
 import 'package:tic_tac_toe_pro/values/variable.dart';
-import 'package:tic_tac_toe_pro/values/variable.dart';
 
 const ticTacToeColor = Colors.black;
 const defaultFrameColor = Colors.black;
@@ -88,13 +87,13 @@ class GameBoxContainerState extends State<GameBoxContainer> {
                             color: context
                                         .watch<GameProvider>()
                                         .capturedBoxes[index] ==
-                                    player.symbol
-                                ? opponent.color
+                                    me.symbol
+                                ? playerColor
                                 : context
                                             .watch<GameProvider>()
                                             .capturedBoxes[index] ==
                                         opponent.symbol
-                                    ? opponent.color
+                                    ? opponentColor
                                     : nobodyColor,
                           ),
                         ),

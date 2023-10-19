@@ -99,7 +99,7 @@ class _LobbyState extends State<Lobby> {
             CircleAvatar(
               child: ClipOval(
                 child: CachedNetworkImage(
-                  imageUrl: playerImg1,
+                  imageUrl: auth.currentUser?.photoURL ?? "",
                   progressIndicatorBuilder: (context, url, downloadProgress) =>
                       CircularProgressIndicator(
                           value: downloadProgress.progress),

@@ -8,7 +8,7 @@ onClickHandler(int parentIndex, int childIndex, BuildContext context) {
   // set timer
   timerkey.currentState?.activateClock();
 
-  final gameDetails = context.read<GameProvider>();
+  final gameDetails = context.watch<GameProvider>();
 
   if (winChecker(gameDetails.displayXOList[parentIndex])) {
     gameDetails.onCapture(parentIndex, gameDetails.currentPlayer.symbol);

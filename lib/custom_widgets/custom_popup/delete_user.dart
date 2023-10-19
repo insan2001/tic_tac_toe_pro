@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:tic_tac_toe_pro/functions/authentication.dart';
+import 'package:tic_tac_toe_pro/functions/userUpdates.dart';
+import 'package:tic_tac_toe_pro/screens/authentication/authentication.dart';
 
 Color gameFontColor = Colors.white;
 
@@ -10,28 +11,22 @@ TextStyle alertBox = GoogleFonts.inriaSans(
   color: gameFontColor,
 ));
 
-Future<bool?> signOutPopup(_context) async => showDialog<bool>(
+Future<bool?> deleteUser(_context) async => showDialog<bool>(
       context: _context,
       builder: (context) {
         return AlertDialog(
-          actionsPadding: EdgeInsets.only(
-            bottom: 10,
-            right: 10,
-          ),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.all(
               Radius.circular(12),
             ),
           ),
           title: Text(
-            "Sign out",
+            "Delete account",
             style: TextStyle(color: Colors.white, fontSize: 24),
           ),
-          content: Flexible(
-            child: Text(
-              "Do you want to sign out?",
-              style: TextStyle(color: Colors.white, fontSize: 18),
-            ),
+          content: Text(
+            "Your process will be lost and can't recover. Do you want to delete?",
+            style: TextStyle(color: Colors.white, fontSize: 18),
           ),
           backgroundColor: Colors.black,
           elevation: 12,
@@ -39,8 +34,9 @@ Future<bool?> signOutPopup(_context) async => showDialog<bool>(
           actions: [
             TextButton(
               onPressed: () {
-                Navigator.pop(context, true);
-                signOut();
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (_) => Authentication()));
+                deleteUserAccount();
               },
               child: Text(
                 "Yes",
